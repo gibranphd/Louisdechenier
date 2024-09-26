@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Circulations de  Louis de Chénier</title>
+    <!-- Leaflet CSS for map visualization -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        /* Fullscreen 3D container with sci-fi neon glow, transparency, and holographic effect */
+        #map {
+            height: 600px;
+            width: 100%;
+            perspective: 3000px; /* Extreme holographic 3D perspective */
+            transform-style: preserve-3d;
+            border: 3px solid rgba(0, 255, 255, 0.6); /* Semi-transparent holographic glow */
+            box-shadow: 0 50px 100px rgba(0, 255, 255, 1); /* Sci-fi neon blue shadow */
+            border-radius: 25px;
+            transition: transform 0.8s ease, box-shadow 0.8s ease;
+            background: radial-gradient(circle, rgba(18, 18, 18, 0.7), rgba(0, 0, 0, 0.5)); /* Semi-transparent sci-fi background */
+            backdrop-filter: blur(15px); /* Blurred holographic effect */
+            animation: rotateMap 20s infinite linear; /* Subtle rotation effect for holographic map */
+            position: relative; /* For rotating globe */
+            z-index: 1;
+        }
+
+        /* Holographic UI Rotation */
+        @keyframes rotateMap {
+            from { transform: rotateX(0deg) rotateY(0deg); }
+            to { transform: rotateX(15deg) rotateY(-15deg); }
+        }
+
+        /* Profile image at the top */
+        .profile-photo {
+            display: block;
+            margin: 0 auto 20px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.6); /* Glowing shadow for the image */
+            border: 3px solid rgba(0, 255, 255, 0.6);
+        }
+
+        /* Left-side legend for circulation details - Set z-index to ensure visibility */
+        .legend-left {
+            position: absolute;
+            left: 10px;
+            top: 200px;
+            background: rgba(18, 18, 18, 0.8); /* Semi-transparent background */
+            padding: 15px;
+            line-height: 1.5;
+            font-size: 16px;
+            box-shadow: 0 30px 60px rgba(0, 255, 255, 1); /* Neon holographic glow */
+            border-radius: 15px;
+            transform: translateZ(60px); /* Deeper 3D placement */
+            color: #00ffea;
+            text-shadow: 0 0 20px #00ffea; /* Sci-fi text glow */
+            width: 220px;
+            z-index: 1000; /* Ensures the legend is always visible */
+        }
+
+        .legend-left h4 {
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px #00ffea;
+        }
+
+        /* Add color indicators to circulation details */
+        .legend-left i {
+            display: inline-block;
+            width: 20px;
+            height: 10px;
+            margin-right: 5px;
+            box-shadow: 1px 1px 10px rgba(0, 255, 255, 0.8); /* Neon shadow for color indicators */
+        }
+
+        .blue { background: blue; }
+        .green { background: green; }
+        .red { background: red; }
+        .purple { background: purple; }
+        .orange { background: orange; }
+
+        /* Right-side legend */
+        .legend-right {
+            position: absolute;
+            right: 10px;
+            bottom: 30px;
+            background: rgba(18, 18, 18, 0.8); /* Semi-transparent background */
+            padding: 15px;
+            line-height: 1.5;
+            font-size: 16px;
+            box-shadow: 0 30px 60px rgba(0, 255, 255, 1); /* Neon holographic glow */
+            border-radius: 15px;
+            transform: translateZ(60px); /* Deeper 3D placement */
+            color: #00ffea;
+            text-shadow: 0 0 20px #00ffea; /* Sci-fi text glow */
+        }
+
+        .legend-right i {
+            display: inline-block;
+            width: 20px;
+            height: 10px;
+            margin-right: 5px;
+            box-shadow: 1px 1px 10px rgba(0, 255, 255, 0.8); /* Neon shadow for color indicators */
+        }
+
+        /* Starfield background */
+        body {
+            background: url('https://www.transparenttextures.com/patterns/dark-matter.png'), linear-gradient(135deg, #000428, #004e92);
+            background-attachment: fixed;
+            background-size: cover;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            color: #00ffea;
+            text-shadow: 0 0 25px #00ffea;
+        }
+
+        /* Sci-Fi neon heading with pulse animation */
+        h1 {
+            font-size: 4em;
+            color: #00ffea;
+            text-shadow: 0 0 25px #00ffea, 0 0 50px #00ffea;
+            margin-bottom: 40px;
+            animation: pulseSciFi 3s infinite; /* Holographic pulsing text */
+        }
+
+        /* Sci-Fi Pulse effect for text */
+        @keyframes pulseSciFi {
+            0% { text-shadow: 0 0 20px #00ffea; }
+            50% { text-shadow: 0 0 50px #00ffea; }
+            100% { text-shadow: 0 0 20px #00ffea; }
+        }
+
+        /* Hover particles for markers */
+        .leaflet-marker-icon:hover {
+            animation: particleEffect 1s infinite;
+        }
+
+        @keyframes particleEffect {
+            0% { box-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea; }
+            50% { box-shadow: 0 0 30px #00ffea, 0 0 60px #00ffea; }
+            100% { box-shadow: 0 0 10px #00ffea, 0 0 20px #00ffea; }
+        }
+
+        /* Sci-Fi paragraph text */
+        p {
+            font-size: 1.6em;
+            color: #00ffea;
+            text-shadow: 0 0 15px #00ffea;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Profile Image of Louis de Chénier -->
+    <img src="https://www.monde-diplomatique.fr/local/cache-vignettes/L890xH583/image-5770-8a775.jpg?1659837522" alt="Louis de Chénier" class="profile-photo">
+
+    <h1>Les Circulations de Louis de Chénier</h1>
+    <p>Explorez les contributions diplomatiques et ethnographiques de Louis de Chénier .</p>
+    
+    <div id="map"></div>
+    
+    <!-- Left-side legend for circulation details -->
+    <div class="legend-left">
+        <h4>Détails des Circulations</h4>
+        <i class="blue"></i> <b>Postes diplomatiques:</b> Safi et Rabat.<br>
+        <i class="green"></i> <b>Commerce:</b> Activités commerciales et routes.<br>
+        <i class="red"></i> <b>France:</b> Politiques développées pour le Maroc.<br>
+        <i class="purple"></i> <b>Culture:</b> Contributions culturelles et études ethnographiques.<br>
+        <i class="orange"></i> <b>Relations bilatérales:</b> Impact à long terme sur les relations France-Maroc.
+    </div>
+
+    <audio id="hoverSound" src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3"></audio>
+
+    <!-- Leaflet JS library -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Initialize the map with sci-fi holographic effects
+        var map = L.map('map', {
+            zoomControl: false, // Remove default zoom control for a cleaner look
+            attributionControl: false, // Remove attribution for a futuristic look
+        }).setView([31.7917, -7.0926], 5); // Maroc coordinates
+
+        // Add OpenStreetMap tiles with a futuristic dark style
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+        }).addTo(map);
+
+        // Define custom markers with extreme sci-fi effects
+        function getColor(circulation) {
+            switch (circulation) {
+                case 'Diplomatique': return 'blue';
+                case 'Commerce': return 'green';
+                case 'France': return 'red';
+                case 'Culture': return 'purple';
+                case 'Relations': return 'orange';
+                default: return 'black';
+            }
+        }
+
+        // Play sound effect on hover
+        function playHoverSound() {
+            var audio = document.getElementById('hoverSound');
+            audio.play();
+        }
+
+        // Create custom holographic markers with sound effects
+        function createCustomMarker(lat, lng, circulation, description) {
+            var marker = L.circleMarker([lat, lng], {
+                color: getColor(circulation),
+                radius: 12
+            }).addTo(map);
+            marker.bindPopup(`<b>${circulation}</b><br>${description}`);
+            marker.on('mouseover', playHoverSound); // Play sound on hover
+        }
+
+        // Add markers for different circulations (Diplomatique, Commerce, Culture, France, Relations)
+        createCustomMarker(32.3056, -9.2372, 'Diplomatique', 'Poste diplomatique à Safi');
+        createCustomMarker(34.0209, -6.8416, 'Diplomatique', 'Poste diplomatique à Rabat');
+        createCustomMarker(48.8566, 2.3522, 'France', 'Élaboration des politiques françaises pour le Maroc');
+        createCustomMarker(34.0225, -6.8356, 'Commerce', 'Activités commerciales stratégiques à Rabat');
+        createCustomMarker(31.634, -8.011, 'Culture', 'Contributions culturelles à Marrakech');
+
+        // Add an extreme neon legend to the right
+        var legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function () {
+            var div = L.DomUtil.create('div', 'legend-right');
+            div.innerHTML += `<h4>Légende</h4>`;
+            div.innerHTML += `<i class="blue"></i> Postes diplomatiques (Safi, Rabat)<br>`;
+            div.innerHTML += `<i class="green"></i> Activités commerciales<br>`;
+            div.innerHTML += `<i class="red"></i> Politiques françaises<br>`;
+            div.innerHTML += `<i class="purple"></i> Contributions culturelles<br>`;
+            div.innerHTML += `<i class="orange"></i> Relations bilatérales France-Maroc<br>`;
+            return div;
+        };
+
+        legend.addTo(map);
+
+        // Add multimedia popups with sci-fi holographic style
+        var multimediaMarker = L.marker([34.0151, -6.8326]).addTo(map)
+            .bindPopup(`
+                <b>Contributions Culturelles</b><br>Documentation sur les pratiques culturelles à Rabat.
+                <br><img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Berber_women_in_Atlas_mountains.jpg" width="150" alt="Berbères"><br>
+                <audio controls><source src="berber_dialect.mp3" type="audio/mpeg">Votre navigateur ne supporte pas l'élément audio.</audio>
+            `);
+    </script>
+</body>
+</html>
